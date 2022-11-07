@@ -1,6 +1,6 @@
-package ru.sfedu;
+package ru.sfedu.pcadvisor;
 
-public class Main {
+public class PCAdvisorClient {
     public static void main(String[] args) {
         System.out.println("Hello world!");
     }
