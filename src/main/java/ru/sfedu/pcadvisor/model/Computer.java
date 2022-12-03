@@ -3,8 +3,11 @@ package ru.sfedu.pcadvisor.model;
 import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.ElementListUnion;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Element
@@ -15,52 +18,47 @@ public class Computer implements Serializable {
 
     @Element
     @CsvBindByPosition(position = 1)
-    private Motherboard motherboard;
+    private String name;
 
-    @Element
+    @ElementListUnion({
+            @ElementList(entry = "Part", inline = true, required = false, type = Part.class),
+            @ElementList(entry = "Cpu", inline = true, required = false, type = Cpu.class),
+            @ElementList(entry = "Ram", inline = true, required = false, type = Ram.class),
+            @ElementList(entry = "Motherboard", inline = true, required = false, type = Motherboard.class),
+    })
     @CsvBindByPosition(position = 2)
-    private Cpu cpu;
-
-    @Element
-    @CsvBindByPosition(position = 3)
-    private Ram ram;
-
-    @Attribute
-    @CsvBindByPosition(position = 4)
-    private int memoryGb;
+    private List<Part> parts;
 
     public Computer() {
     }
 
-    public Computer(long id, Motherboard motherboard, Cpu cpu, Ram ram, int memoryGb) {
+    public Computer(long id, String name, List<Part> parts) {
         setId(id);
-        setMotherboard(motherboard);
-        setCpu(cpu);
-        setRam(ram);
-        setMemoryGb(memoryGb);
+        setName(name);
+        setParts(parts);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Computer computer)) return false;
-        return getId() == computer.getId() && getMemoryGb() == computer.getMemoryGb() && Objects.equals(getMotherboard(), computer.getMotherboard()) && Objects.equals(getCpu(), computer.getCpu()) && Objects.equals(getRam(), computer.getRam());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getMotherboard(), getCpu(), getRam(), getMemoryGb());
+        return getId() == computer.getId()
+                && Objects.equals(getName(), computer.getName())
+                && Objects.equals(getParts(), computer.getParts());
     }
 
     @Override
     public String toString() {
         return "Computer{" +
                 "id=" + getId() +
-                ", motherboard=" + getMotherboard() +
-                ", cpu=" + getCpu() +
-                ", ram=" + getRam() +
-                ", memoryGb=" + getMemoryGb() +
+                ", name='" + getName() + '\'' +
+                ", parts=" + getParts() +
                 '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getParts());
     }
 
     public long getId() {
@@ -71,35 +69,19 @@ public class Computer implements Serializable {
         this.id = id;
     }
 
-    public Motherboard getMotherboard() {
-        return motherboard;
+    public String getName() {
+        return name;
     }
 
-    public void setMotherboard(Motherboard motherboard) {
-        this.motherboard = motherboard;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Cpu getCpu() {
-        return cpu;
+    public List<Part> getParts() {
+        return parts;
     }
 
-    public void setCpu(Cpu cpu) {
-        this.cpu = cpu;
-    }
-
-    public Ram getRam() {
-        return ram;
-    }
-
-    public void setRam(Ram ram) {
-        this.ram = ram;
-    }
-
-    public int getMemoryGb() {
-        return memoryGb;
-    }
-
-    public void setMemoryGb(int memoryGb) {
-        this.memoryGb = memoryGb;
+    public void setParts(List<Part> parts) {
+        this.parts = parts;
     }
 }
