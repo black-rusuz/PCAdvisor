@@ -18,7 +18,7 @@ public class Computer implements Serializable {
 
     @Element
     @CsvBindByPosition(position = 1)
-    private String name;
+    private String name = "";
 
     @ElementListUnion({
             @ElementList(entry = "Part", inline = true, required = false, type = Part.class),
@@ -27,7 +27,7 @@ public class Computer implements Serializable {
             @ElementList(entry = "Motherboard", inline = true, required = false, type = Motherboard.class),
     })
     @CsvBindByPosition(position = 2)
-    private List<Part> parts;
+    private List<Part> parts = List.of();
 
     public Computer() {
     }
