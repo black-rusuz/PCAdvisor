@@ -6,7 +6,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementListUnion;
-import ru.sfedu.pcadvisor.utils.PartConverter;
+import ru.sfedu.pcadvisor.utils.PartsConverter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class Order implements Serializable {
             @ElementList(inline = true, required = false, type = Ram.class),
             @ElementList(inline = true, required = false, type = Motherboard.class),
     })
-    @CsvCustomBindByPosition(position = 2, converter = PartConverter.class)
+    @CsvCustomBindByPosition(position = 2, converter = PartsConverter.class)
     private List<Part> parts = new ArrayList<>();
 
     @Attribute
