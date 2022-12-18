@@ -3,7 +3,6 @@ package ru.sfedu.pcadvisor.model.bean;
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvCustomBindByPosition;
 import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementListUnion;
 import ru.sfedu.pcadvisor.utils.PartsConverter;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Element
 public class Order implements Serializable {
     @Attribute
     @CsvBindByPosition(position = 0)
