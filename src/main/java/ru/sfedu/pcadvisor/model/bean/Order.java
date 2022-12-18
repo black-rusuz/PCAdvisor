@@ -9,6 +9,7 @@ import org.simpleframework.xml.ElementListUnion;
 import ru.sfedu.pcadvisor.utils.PartConverter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,19 +19,20 @@ public class Order implements Serializable {
     @CsvBindByPosition(position = 0)
     private long id;
 
-    @Element
+    @Attribute
     @CsvBindByPosition(position = 1)
     private String name = "";
 
     @ElementListUnion({
-            @ElementList(entry = "Part", inline = true, required = false, type = Part.class),
-            @ElementList(entry = "Cpu", inline = true, required = false, type = Cpu.class),
-            @ElementList(entry = "Ram", inline = true, required = false, type = Ram.class),
-            @ElementList(entry = "Motherboard", inline = true, required = false, type = Motherboard.class),
+            @ElementList(inline = true, required = false, type = Part.class),
+            @ElementList(inline = true, required = false, type = Cpu.class),
+            @ElementList(inline = true, required = false, type = Ram.class),
+            @ElementList(inline = true, required = false, type = Motherboard.class),
     })
     @CsvCustomBindByPosition(position = 2, converter = PartConverter.class)
-    private List<Part> parts = List.of();
+    private List<Part> parts = new ArrayList<>();
 
+    @Attribute
     @CsvBindByPosition(position = 3)
     double totalPrice;
 
