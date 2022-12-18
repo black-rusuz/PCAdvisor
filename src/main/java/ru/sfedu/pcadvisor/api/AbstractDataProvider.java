@@ -3,10 +3,7 @@ package ru.sfedu.pcadvisor.api;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.sfedu.pcadvisor.model.HistoryContent;
-import ru.sfedu.pcadvisor.model.bean.Cpu;
-import ru.sfedu.pcadvisor.model.bean.Motherboard;
-import ru.sfedu.pcadvisor.model.bean.Order;
-import ru.sfedu.pcadvisor.model.bean.Ram;
+import ru.sfedu.pcadvisor.model.bean.*;
 import ru.sfedu.pcadvisor.utils.ConfigurationUtil;
 import ru.sfedu.pcadvisor.utils.Constants;
 import ru.sfedu.pcadvisor.utils.MongoUtil;
@@ -14,8 +11,11 @@ import ru.sfedu.pcadvisor.utils.ReflectUtil;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("UnusedReturnValue")
 public abstract class AbstractDataProvider {
@@ -69,7 +69,117 @@ public abstract class AbstractDataProvider {
 
     // USE CASES
 
-    // TODO:
+    public double countBuildPrice(long orderId) {
+        Order order = getOrder(orderId);
+        double cost = order.getParts().stream().mapToDouble(Part::getPrice).sum();
+        log.info(Constants.TOTAL_PRICE + cost);
+        return cost;
+    }
+
+    public Optional<Order> buildPc(long orderId, String action, long partId) {
+        switch (action.toUpperCase()) {
+            case Constants.ADD -> addPart(orderId, partId);
+            case Constants.REMOVE -> removePart(orderId, partId);
+        }
+
+        Order order = orderId == 0 ? new Order() : getOrder(orderId);
+        validateBuild(order.getId());
+
+        log.info(Constants.YOUR_ORDER + order);
+        return Optional.of(order);
+    }
+
+    private Optional<Part> getPart(long partId) {
+        Cpu cpu = getCpu(partId);
+        Ram ram = getRam(partId);
+        Motherboard motherboard = getMotherboard(partId);
+
+        if (motherboard.getId() == 0 && cpu.getId() == 0 && ram.getId() == 0) {
+            log.info(getNotFoundMessage(Part.class, partId));
+            return Optional.empty();
+        }
+
+        List<Part> parts = List.of(cpu, ram, motherboard);
+        return parts.stream().filter(e -> e.getId() != 0).findFirst();
+    }
+
+    public Optional<Order> addPart(long orderId, long partId) {
+        Order order = getOrder(orderId);
+        Optional<Part> optionalPart = getPart(partId);
+        if (optionalPart.isEmpty()) return Optional.empty();
+
+        List<Part> parts = new ArrayList<>(order.getParts());
+        parts.add(optionalPart.get());
+        order.setParts(parts);
+        updateOrder(order);
+
+        log.info(Constants.ADDED_PART + optionalPart.get().getName());
+        return Optional.of(order);
+    }
+
+    public Optional<Order> removePart(long orderId, long partId) {
+        Order order = getOrder(orderId);
+        Optional<Part> optionalPart = getPart(partId);
+        if (optionalPart.isEmpty()) return Optional.empty();
+        Part part = optionalPart.get();
+
+        List<Part> parts = new ArrayList<>(order.getParts());
+
+        boolean partNotInstalled = parts.stream().filter(e -> e.getId() == partId).toList().isEmpty();
+        if (partNotInstalled) {
+            log.info(Constants.PART_NOT_INSTALLED + part.getName());
+            return Optional.empty();
+        }
+
+        parts.removeIf(e -> e.getId() == partId);
+        order.setParts(parts);
+        updateOrder(order);
+
+        log.info(Constants.REMOVED_PART + part.getName());
+        return Optional.of(order);
+    }
+
+    public boolean validateBuild(long orderId) {
+        Order order = getOrder(orderId);
+        List<Part> parts = order.getParts();
+        boolean isCorrect = parts.stream().map(Part::getClass).distinct().toArray().length == 3;
+        log.info(isCorrect ? Constants.BUILD_VALID : Constants.BUILD_INVALID);
+        return isCorrect;
+    }
+
+    public Optional<Order> findBuild(long orderId) {
+        Order order = getOrder(orderId);
+        if (order.getId() == 0) {
+            getNotFoundMessage(Order.class, orderId);
+            return Optional.empty();
+        }
+        showMissingParts(orderId);
+        return Optional.of(order);
+    }
+
+    public List<Part> showMissingParts(long orderId) {
+        Order order = getOrder(orderId);
+        List classes = order.getParts().stream().map(Part::getClass).distinct().toList();
+        ArrayList<Part> missingParts = new ArrayList<>();
+
+        if (!classes.contains(Cpu.class)) {
+            List<Cpu> cpus = getCpus();
+            missingParts.addAll(cpus);
+        }
+        if (!classes.contains(Motherboard.class)) {
+            List<Motherboard> motherboards = getMotherboards();
+            missingParts.addAll(motherboards);
+        }
+        if (!classes.contains(Ram.class)) {
+            List<Ram> rams = getRams();
+            missingParts.addAll(rams);
+        }
+
+        if (!validateBuild(orderId))
+            log.info(Constants.MISSING_PARTS
+                    + missingParts.stream().map(Part::toString).collect(Collectors.joining("\n")));
+        return missingParts;
+    }
 
     // CRUD
 

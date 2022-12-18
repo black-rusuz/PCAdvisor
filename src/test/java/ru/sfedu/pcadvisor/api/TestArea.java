@@ -15,6 +15,10 @@ public class TestArea extends TestData {
     protected final AbstractDataProvider dp = new DataProviderJdbc();
 
     @Test
+    void test() {
+    }
+
+    @Test
     void cpus() {
         log.info(dp.getCpus());
 

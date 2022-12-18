@@ -37,15 +37,19 @@ public class Constants {
     public static final String JDBC = "JDBC";
     public static final String CSV = "CSV";
 
+    public static final String ADD = "ADD";
+    public static final String REMOVE = "REMOVE";
+
     // Info
     public static final String NOT_FOUND = "%s ID %d not found";
-    public static final String DATE_FORMAT = "%d.%d.%d";
-    public static final String NEW_RENT = "Created rent:\n";
-    public static final String CARD_EXPIRED = "Card is expired";
-    public static final String CARD_NOT_EXPIRED = "Card is not expired";
-    public static final String EXPIRING_RENTS = "Expiring rents:\n";
-    public static final String EXPIRING_CARDS = "Expiring cards:\n";
-    public static final String EXPIRED_PERIOD = "Expired period:\n";
+    public static final String TOTAL_PRICE = "Total price: ";
+    public static final String YOUR_ORDER = "Your build:\n";
+    public static final String ADDED_PART = "Added part: ";
+    public static final String REMOVED_PART = "Removed part: ";
+    public static final String PART_NOT_INSTALLED = "Part not installed: ";
+    public static final String BUILD_VALID = "Build is valid";
+    public static final String BUILD_INVALID = "Build is invalid";
+    public static final String MISSING_PARTS = "You have the missing parts. Try one of these:\n";
 
     public static final String FEW_ARGS = "Few arguments";
     public static final String WRONG_DP = "Wrong type of DataProvider";
