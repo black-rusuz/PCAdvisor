@@ -12,7 +12,7 @@ import ru.sfedu.pcadvisor.utils.TestData;
 
 public class TestArea extends TestData {
     protected final Logger log = LogManager.getLogger(TestArea.class);
-    protected final AbstractDataProvider dp = new DataProviderCsv();
+    protected final AbstractDataProvider dp = new DataProviderJdbc();
 
     @Test
     void cpus() {

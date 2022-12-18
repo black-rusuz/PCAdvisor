@@ -19,32 +19,32 @@ public class PartsConverter extends AbstractBeanField<List<Part>, String> {
         return switch (parsed.length) {
             case (5) -> {
                 try {
-                    Ram ram = new Ram();
-                    ram.setId(Long.parseLong(parsed[0]));
-                    ram.setName(parsed[1]);
-                    ram.setPrice(Double.parseDouble(parsed[2]));
-                    ram.setVolumeGb(Integer.parseInt(parsed[3]));
-                    ram.setDdrVersion(Integer.parseInt(parsed[4]));
-                    yield ram;
+                    Ram bean = new Ram();
+                    bean.setId(Long.parseLong(parsed[0]));
+                    bean.setName(parsed[1]);
+                    bean.setPrice(Double.parseDouble(parsed[2]));
+                    bean.setVolumeGb(Integer.parseInt(parsed[3]));
+                    bean.setDdrVersion(Integer.parseInt(parsed[4]));
+                    yield bean;
                 } catch (Exception e) {
-                    Motherboard motherboard = new Motherboard();
-                    motherboard.setId(Long.parseLong(parsed[0]));
-                    motherboard.setName(parsed[1]);
-                    motherboard.setPrice(Double.parseDouble(parsed[2]));
-                    motherboard.setSocket(parsed[3]);
-                    motherboard.setDdrVersion(Integer.parseInt(parsed[4]));
-                    yield motherboard;
+                    Motherboard bean = new Motherboard();
+                    bean.setId(Long.parseLong(parsed[0]));
+                    bean.setName(parsed[1]);
+                    bean.setPrice(Double.parseDouble(parsed[2]));
+                    bean.setSocket(parsed[3]);
+                    bean.setDdrVersion(Integer.parseInt(parsed[4]));
+                    yield bean;
                 }
             }
             case (6) -> {
-                Cpu cpu = new Cpu();
-                cpu.setId(Long.parseLong(parsed[0]));
-                cpu.setName(parsed[1]);
-                cpu.setPrice(Double.parseDouble(parsed[2]));
-                cpu.setFrequency(Integer.parseInt(parsed[3]));
-                cpu.setCoreCount(Integer.parseInt(parsed[4]));
-                cpu.setSocket(parsed[5]);
-                yield cpu;
+                Cpu bean = new Cpu();
+                bean.setId(Long.parseLong(parsed[0]));
+                bean.setName(parsed[1]);
+                bean.setPrice(Double.parseDouble(parsed[2]));
+                bean.setFrequency(Integer.parseInt(parsed[3]));
+                bean.setCoreCount(Integer.parseInt(parsed[4]));
+                bean.setSocket(parsed[5]);
+                yield bean;
             }
             default -> new Part() {};
         };

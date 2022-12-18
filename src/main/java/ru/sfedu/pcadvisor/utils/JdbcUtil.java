@@ -44,6 +44,7 @@ public class JdbcUtil {
     private static final String COLUMN_TYPE_LONG = " LONG";
     private static final String COLUMN_TYPE_STRING = " VARCHAR";
     private static final String COLUMN_TYPE_INT = " INTEGER";
+    private static final String COLUMN_TYPE_DOUBLE = " NUMERIC";
 
     public static <T> String createTable(T bean) {
         LinkedHashMap<String, Object> map = getMap(bean);
@@ -61,6 +62,8 @@ public class JdbcUtil {
             return getColumnName(entry.getKey()) + COLUMN_TYPE_LONG + COLUMN_PRIMARY_KEY;
         else if (entry.getValue().getClass() == Integer.class)
             return getColumnName(entry.getKey()) + COLUMN_TYPE_INT;
+        else if (entry.getValue().getClass() == Double.class)
+            return getColumnName(entry.getKey()) + COLUMN_TYPE_DOUBLE;
         else
             return getColumnName(entry.getKey()) + COLUMN_TYPE_STRING;
     }
@@ -112,9 +115,14 @@ public class JdbcUtil {
         return map.values().stream().map(Object::toString).collect(Collectors.joining(Constants.FIELDS_DELIMITER));
     }
 
+    private static String innerListToString(ArrayList<LinkedHashMap<String, Object>> list) {
+        return list.stream().map(JdbcUtil::innerMapToString).collect(Collectors.joining(Constants.BEANS_DELIMITER));
+    }
+
     private static String toValues(Object value) {
         String valueString = value.toString();
         if (value instanceof LinkedHashMap valueMap) valueString = innerMapToString(valueMap);
+        if (value instanceof ArrayList valueMap) valueString = innerListToString(valueMap);
         return String.format(SQL_VALUE_WRAPPER, valueString);
     }
 
@@ -122,6 +130,7 @@ public class JdbcUtil {
         Object value = entry.getValue();
         String valueString = value.toString();
         if (value instanceof LinkedHashMap valueMap) valueString = innerMapToString(valueMap);
+        if (value instanceof ArrayList valueMap) valueString = innerListToString(valueMap);
         return String.format(SQL_KEY_VALUE_WRAPPER, getColumnName(entry.getKey()), valueString);
     }
 
@@ -139,46 +148,66 @@ public class JdbcUtil {
 
     // READ
 
-    public static <T> List<T> readData(Class<T> type, ResultSet resultSet) throws SQLException {
+    public static <T> List<T> readData(Class<T> type, ResultSet rs) throws SQLException {
         List list = new ArrayList<>();
-        if (type == Cpu.class) list = readCpu(resultSet);
-        if (type == Motherboard.class) list = readMotherboard(resultSet);
-        if (type == Order.class) list = readOrder(resultSet);
-        if (type == Ram.class) list = readRam(resultSet);
+        if (type == Cpu.class) list = readCpu(rs);
+        if (type == Motherboard.class) list = readMotherboard(rs);
+        if (type == Order.class) list = readOrder(rs);
+        if (type == Ram.class) list = readRam(rs);
         return list;
     }
 
-    private static List<Cpu> readCpu(ResultSet resultSet) throws SQLException {
+    private static List<Cpu> readCpu(ResultSet rs) throws SQLException {
         List<Cpu> list = new ArrayList<>();
-        while (resultSet.next()) {
+        while (rs.next()) {
             Cpu bean = new Cpu();
+            bean.setId(rs.getLong(1));
+            bean.setName(rs.getString(2));
+            bean.setPrice(rs.getDouble(3));
+            bean.setFrequency(rs.getInt(4));
+            bean.setCoreCount(rs.getInt(5));
+            bean.setSocket(rs.getString(6));
             list.add(bean);
         }
         return list;
     }
 
-    private static List<Motherboard> readMotherboard(ResultSet resultSet) throws SQLException {
+    private static List<Motherboard> readMotherboard(ResultSet rs) throws SQLException {
         List<Motherboard> list = new ArrayList<>();
-        while (resultSet.next()) {
+        while (rs.next()) {
             Motherboard bean = new Motherboard();
+            bean.setId(rs.getLong(1));
+            bean.setName(rs.getString(2));
+            bean.setPrice(rs.getDouble(3));
+            bean.setSocket(rs.getString(4));
+            bean.setDdrVersion(rs.getInt(5));
             list.add(bean);
         }
         return list;
     }
 
-    private static List<Order> readOrder(ResultSet resultSet) throws SQLException {
+    private static List<Order> readOrder(ResultSet rs) throws SQLException {
         List<Order> list = new ArrayList<>();
-        while (resultSet.next()) {
+        while (rs.next()) {
             Order bean = new Order();
+            bean.setId(rs.getLong(1));
+            bean.setName(rs.getString(2));
+            bean.setParts(PartsConverter.fromString(rs.getString(3)));
+            bean.setTotalPrice(rs.getDouble(4));
             list.add(bean);
         }
         return list;
     }
 
-    private static List<Ram> readRam(ResultSet resultSet) throws SQLException {
+    private static List<Ram> readRam(ResultSet rs) throws SQLException {
         List<Ram> list = new ArrayList<>();
-        while (resultSet.next()) {
+        while (rs.next()) {
             Ram bean = new Ram();
+            bean.setId(rs.getLong(1));
+            bean.setName(rs.getString(2));
+            bean.setPrice(rs.getDouble(3));
+            bean.setVolumeGb(rs.getInt(4));
+            bean.setDdrVersion(rs.getInt(5));
             list.add(bean);
         }
         return list;
