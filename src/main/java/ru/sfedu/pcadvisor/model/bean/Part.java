@@ -1,4 +1,4 @@
-package ru.sfedu.pcadvisor.model;
+package ru.sfedu.pcadvisor.model.bean;
 
 import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Attribute;
