@@ -125,15 +125,14 @@ public abstract class AbstractDataProvider {
         if (optionalPart.isPresent()) {
             Part part = optionalPart.get();
             List<Part> parts = new ArrayList<>(order.getParts());
-            boolean partNotInstalled = parts.stream().filter(e -> e.getId() == partId).toList().isEmpty();
 
-            if (partNotInstalled) {
-                log.info(Constants.PART_NOT_INSTALLED + part.getName());
-            } else {
-                parts.removeIf(e -> e.getId() == partId);
+            if (parts.contains(part)) {
+                parts.remove(part);
                 order.setParts(parts);
                 updateOrder(order);
                 log.info(Constants.REMOVED_PART + part.getName());
+            } else {
+                log.info(Constants.PART_NOT_INSTALLED + part.getName());
             }
         }
         return Optional.of(order);
