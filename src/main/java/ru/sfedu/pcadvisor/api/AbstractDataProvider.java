@@ -128,14 +128,12 @@ public abstract class AbstractDataProvider {
         boolean partNotInstalled = parts.stream().filter(e -> e.getId() == partId).toList().isEmpty();
         if (partNotInstalled) {
             log.info(Constants.PART_NOT_INSTALLED + part.getName());
-            return Optional.empty();
+        } else {
+            parts.removeIf(e -> e.getId() == partId);
+            order.setParts(parts);
+            updateOrder(order);
+            log.info(Constants.REMOVED_PART + part.getName());
         }
-
-        parts.removeIf(e -> e.getId() == partId);
-        order.setParts(parts);
-        updateOrder(order);
-
-        log.info(Constants.REMOVED_PART + part.getName());
         return Optional.of(order);
     }
 
@@ -153,6 +151,7 @@ public abstract class AbstractDataProvider {
             getNotFoundMessage(Order.class, orderId);
             return Optional.empty();
         }
+        log.info(Constants.YOUR_ORDER + order);
         showMissingParts(orderId);
         return Optional.of(order);
     }
@@ -176,8 +175,9 @@ public abstract class AbstractDataProvider {
         }
 
         if (!validateBuild(orderId))
-            log.info(Constants.MISSING_PARTS
-                    + missingParts.stream().map(Part::toString).collect(Collectors.joining("\n")));
+            log.info(Constants.MISSING_PARTS + missingParts.stream()
+                    .map(Part::toString)
+                    .collect(Collectors.joining("\n")));
         return missingParts;
     }
 
