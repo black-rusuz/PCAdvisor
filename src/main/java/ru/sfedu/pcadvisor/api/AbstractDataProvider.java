@@ -108,11 +108,13 @@ public abstract class AbstractDataProvider {
         Optional<Part> optionalPart = getPart(partId);
 
         if (optionalPart.isPresent()) {
+            Part part = optionalPart.get();
             List<Part> parts = new ArrayList<>(order.getParts());
-            parts.add(optionalPart.get());
+
+            parts.add(part);
             order.setParts(parts);
             updateOrder(order);
-            log.info(Constants.ADDED_PART + optionalPart.get().getName());
+            log.info(Constants.ADDED_PART + part.getName());
         }
 
         return Optional.of(order);
