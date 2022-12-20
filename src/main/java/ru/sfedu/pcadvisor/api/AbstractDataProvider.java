@@ -106,33 +106,35 @@ public abstract class AbstractDataProvider {
     public Optional<Order> addPart(long orderId, long partId) {
         Order order = getOrder(orderId);
         Optional<Part> optionalPart = getPart(partId);
-        if (optionalPart.isEmpty()) return Optional.empty();
 
-        List<Part> parts = new ArrayList<>(order.getParts());
-        parts.add(optionalPart.get());
-        order.setParts(parts);
-        updateOrder(order);
+        if (optionalPart.isPresent()) {
+            List<Part> parts = new ArrayList<>(order.getParts());
+            parts.add(optionalPart.get());
+            order.setParts(parts);
+            updateOrder(order);
+            log.info(Constants.ADDED_PART + optionalPart.get().getName());
+        }
 
-        log.info(Constants.ADDED_PART + optionalPart.get().getName());
         return Optional.of(order);
     }
 
     public Optional<Order> removePart(long orderId, long partId) {
         Order order = getOrder(orderId);
         Optional<Part> optionalPart = getPart(partId);
-        if (optionalPart.isEmpty()) return Optional.empty();
-        Part part = optionalPart.get();
 
-        List<Part> parts = new ArrayList<>(order.getParts());
+        if (optionalPart.isPresent()) {
+            Part part = optionalPart.get();
+            List<Part> parts = new ArrayList<>(order.getParts());
+            boolean partNotInstalled = parts.stream().filter(e -> e.getId() == partId).toList().isEmpty();
 
-        boolean partNotInstalled = parts.stream().filter(e -> e.getId() == partId).toList().isEmpty();
-        if (partNotInstalled) {
-            log.info(Constants.PART_NOT_INSTALLED + part.getName());
-        } else {
-            parts.removeIf(e -> e.getId() == partId);
-            order.setParts(parts);
-            updateOrder(order);
-            log.info(Constants.REMOVED_PART + part.getName());
+            if (partNotInstalled) {
+                log.info(Constants.PART_NOT_INSTALLED + part.getName());
+            } else {
+                parts.removeIf(e -> e.getId() == partId);
+                order.setParts(parts);
+                updateOrder(order);
+                log.info(Constants.REMOVED_PART + part.getName());
+            }
         }
         return Optional.of(order);
     }
