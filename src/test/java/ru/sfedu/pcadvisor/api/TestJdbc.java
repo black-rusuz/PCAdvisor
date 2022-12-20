@@ -1,7 +1,7 @@
 package ru.sfedu.pcadvisor.api;
 
-public class JdbcTest extends ApiTest {
-    JdbcTest() {
+public class TestJdbc extends ApiTest {
+    TestJdbc() {
         dp = new DataProviderJdbc();
     }
 }

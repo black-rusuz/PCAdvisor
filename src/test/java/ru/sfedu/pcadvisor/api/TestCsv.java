@@ -1,7 +1,7 @@
 package ru.sfedu.pcadvisor.api;
 
-public class CsvTest extends ApiTest {
-    CsvTest() {
+public class TestCsv extends ApiTest {
+    TestCsv() {
         dp = new DataProviderCsv();
     }
 }
