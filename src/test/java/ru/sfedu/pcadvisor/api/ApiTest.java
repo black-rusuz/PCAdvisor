@@ -17,11 +17,6 @@ public abstract class ApiTest extends TestData {
     protected AbstractDataProvider dp;
 
     @Test
-    void test() {
-    }
-
-
-    @Test
     void countBuildPricePos() {
         Assertions.assertEquals(17470, dp.countBuildPrice(o1.getId()));
     }

@@ -71,6 +71,7 @@ public abstract class AbstractDataProvider {
 
     /**
      * Подсчёт стоимости сборки компьютера
+     *
      * @param orderId ID заказа
      * @return Стоимость сборки компьютера
      */
@@ -83,9 +84,10 @@ public abstract class AbstractDataProvider {
 
     /**
      * Сборка компьютера
+     *
      * @param orderId ID заказа
-     * @param action Действие для детали
-     * @param partId ID детали
+     * @param action  Действие для детали
+     * @param partId  ID детали
      * @return Созданный заказ
      */
     public Optional<Order> buildPc(long orderId, String action, long partId) {
@@ -96,6 +98,7 @@ public abstract class AbstractDataProvider {
 
         Order order = orderId == 0 ? new Order() : getOrder(orderId);
         validateBuild(order.getId());
+        countBuildPrice(order.getId());
 
         log.info(Constants.YOUR_ORDER + order);
         return Optional.of(order);
@@ -103,6 +106,7 @@ public abstract class AbstractDataProvider {
 
     /**
      * Получить деталь
+     *
      * @param partId ID детали
      * @return Деталь
      */
@@ -122,8 +126,9 @@ public abstract class AbstractDataProvider {
 
     /**
      * Добавить деталь к заказу
+     *
      * @param orderId ID заказа
-     * @param partId ID детали
+     * @param partId  ID детали
      * @return Обновлённый заказ
      */
     public Optional<Order> addPart(long orderId, long partId) {
@@ -145,8 +150,9 @@ public abstract class AbstractDataProvider {
 
     /**
      * Удалить деталь из заказа
+     *
      * @param orderId ID заказа
-     * @param partId ID детали
+     * @param partId  ID детали
      * @return Обновлённый заказ
      */
     public Optional<Order> removePart(long orderId, long partId) {
@@ -171,6 +177,7 @@ public abstract class AbstractDataProvider {
 
     /**
      * Проверить сборку
+     *
      * @param orderId ID заказа
      * @return True, если все необходимые детали на месте
      */
@@ -194,12 +201,14 @@ public abstract class AbstractDataProvider {
             return Optional.empty();
         }
         log.info(Constants.YOUR_ORDER + order);
+        countBuildPrice(order.getId());
         showMissingParts(orderId);
         return Optional.of(order);
     }
 
     /**
      * Показать недостающие детали
+     *
      * @param orderId ID заказа
      * @return Список недостающих деталей
      */
