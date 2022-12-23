@@ -98,7 +98,8 @@ public abstract class AbstractDataProvider {
 
         Order order = orderId == 0 ? new Order() : getOrder(orderId);
         validateBuild(order.getId());
-        countBuildPrice(order.getId());
+        order.setTotalPrice(countBuildPrice(order.getId()));
+        updateOrder(order);
 
         log.info(Constants.YOUR_ORDER + order);
         return Optional.of(order);
