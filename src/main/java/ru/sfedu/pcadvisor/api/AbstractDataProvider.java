@@ -69,6 +69,11 @@ public abstract class AbstractDataProvider {
 
     // USE CASES
 
+    /**
+     * Подсчёт стоимости сборки компьютера
+     * @param orderId ID заказа
+     * @return Стоимость сборки компьютера
+     */
     public double countBuildPrice(long orderId) {
         Order order = getOrder(orderId);
         double cost = order.getParts().stream().mapToDouble(Part::getPrice).sum();
@@ -76,6 +81,13 @@ public abstract class AbstractDataProvider {
         return cost;
     }
 
+    /**
+     * Сборка компьютера
+     * @param orderId ID заказа
+     * @param action Действие для детали
+     * @param partId ID детали
+     * @return Созданный заказ
+     */
     public Optional<Order> buildPc(long orderId, String action, long partId) {
         switch (action.toUpperCase()) {
             case Constants.ADD -> addPart(orderId, partId);
@@ -89,6 +101,11 @@ public abstract class AbstractDataProvider {
         return Optional.of(order);
     }
 
+    /**
+     * Получить деталь
+     * @param partId ID детали
+     * @return Деталь
+     */
     private Optional<Part> getPart(long partId) {
         Cpu cpu = getCpu(partId);
         Ram ram = getRam(partId);
@@ -103,6 +120,12 @@ public abstract class AbstractDataProvider {
         return parts.stream().filter(e -> e.getId() != 0).findFirst();
     }
 
+    /**
+     * Добавить деталь к заказу
+     * @param orderId ID заказа
+     * @param partId ID детали
+     * @return Обновлённый заказ
+     */
     public Optional<Order> addPart(long orderId, long partId) {
         Order order = getOrder(orderId);
         Optional<Part> optionalPart = getPart(partId);
@@ -120,6 +143,12 @@ public abstract class AbstractDataProvider {
         return Optional.of(order);
     }
 
+    /**
+     * Удалить деталь из заказа
+     * @param orderId ID заказа
+     * @param partId ID детали
+     * @return Обновлённый заказ
+     */
     public Optional<Order> removePart(long orderId, long partId) {
         Order order = getOrder(orderId);
         Optional<Part> optionalPart = getPart(partId);
@@ -140,6 +169,11 @@ public abstract class AbstractDataProvider {
         return Optional.of(order);
     }
 
+    /**
+     * Проверить сборку
+     * @param orderId ID заказа
+     * @return True, если все необходимые детали на месте
+     */
     public boolean validateBuild(long orderId) {
         Order order = getOrder(orderId);
         List<Part> parts = order.getParts();
@@ -159,6 +193,11 @@ public abstract class AbstractDataProvider {
         return Optional.of(order);
     }
 
+    /**
+     * Показать недостающие детали
+     * @param orderId ID заказа
+     * @return Список недостающих деталей
+     */
     public List<Part> showMissingParts(long orderId) {
         Order order = getOrder(orderId);
         List classes = order.getParts().stream().map(Part::getClass).distinct().toList();
