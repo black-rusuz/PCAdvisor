@@ -182,6 +182,11 @@ public abstract class AbstractDataProvider {
         return isCorrect;
     }
 
+    /**
+     * Найти сборку
+     * @param orderId ID заказа
+     * @return Соответствующий заказ
+     */
     public Optional<Order> findBuild(long orderId) {
         Order order = getOrder(orderId);
         if (order.getId() == 0) {
