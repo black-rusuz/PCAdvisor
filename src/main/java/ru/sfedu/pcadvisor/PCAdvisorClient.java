@@ -20,10 +20,14 @@ public class PCAdvisorClient {
 
         switch (args[1].toUpperCase()) {
             case (Constants.COUNT_BUILD_PRICE) -> dp.countBuildPrice(Long.parseLong(args[2]));
-            case (Constants.BUILD_PC) -> dp.buildPc(Long.parseLong(args[2]), args[3], Long.parseLong(args[4]));
+
+            case (Constants.BUILD_PC) -> dp.buildPc(Long.parseLong(args[2]),
+                    args.length > 3 ? args[3] : "",
+                    args.length > 3 ? Long.parseLong(args[4]) : 0);
             case (Constants.ADD_PART) -> dp.addPart(Long.parseLong(args[2]), Long.parseLong(args[3]));
             case (Constants.REMOVE_PART) -> dp.removePart(Long.parseLong(args[2]), Long.parseLong(args[3]));
             case (Constants.VALIDATE_BUILD) -> dp.validateBuild(Long.parseLong(args[2]));
+
             case (Constants.FIND_BUILD) -> dp.findBuild(Long.parseLong(args[2]));
             case (Constants.SHOW_MISSING_PARTS) -> dp.showMissingParts(Long.parseLong(args[2]));
             default -> log.error(Constants.WRONG_ARG);

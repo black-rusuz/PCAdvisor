@@ -14,6 +14,7 @@ public class TestArea extends TestData {
     @Test
     void test() {
         PCAdvisorClient.main("XML countBuildPrice 41".split(" "));
+        PCAdvisorClient.main("XML buildPc 41".split(" "));
         PCAdvisorClient.main("XML buildPc 41 add 21".split(" "));
         PCAdvisorClient.main("XML addPart 41 31".split(" "));
         PCAdvisorClient.main("XML removePart 41 31".split(" "));
